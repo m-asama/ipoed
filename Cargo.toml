@@ -1,0 +1,27 @@
+[package]
+name = "ipoed"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rand = "0.10.0"
+libc = "0.2.183"
+resolv = { git = "https://github.com/mikedilger/resolv-rs" }
+curl = "0.4.49"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+
+[package.metadata.deb]
+maintainer = "Masakazu Asama <masakazu.asama@gmail.com>"
+copyright = "2026, Masakazu Asama <masakazu.asama@gmail.com>"
+license-file = ["LICENSE", "4"]
+extended-description = "Software for building a router that uses an IPoE-based internet connection service"
+depends = "$auto"
+section = "admin"
+priority = "optional"
+maintainer-scripts = "debian/"
+systemd-units = { enable = false }
+assets = [
+    ["target/release/ipoed", "usr/sbin/", "755"],
+    ["assets/default", "etc/default/ipoed", "644"],
+]

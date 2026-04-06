@@ -1,0 +1,3 @@
+WAN_IF="wan"
+LAN_IF="lan"
+IPOED_OPTS="--lan-addr4 192.168.1.1/24"
