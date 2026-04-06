@@ -55,11 +55,10 @@ LAN_IF="enp2s0
 IPOED_OPTS="--lan-addr4 192.168.1.1/24"
 ```
 
-:::note warn
-`WAN_IF` と `LAN_IF` に指定したインターフェースは Netplan で設定を行わないようにする必要があります。
-Netplan の設定からは削除してください。
-Netplan の設定に `WAN_IF` と `LAN_IF` に指定したインターフェースがあると IPoEd が設定したアドレスが Netplan によって消される可能性があります。
-:::
+> [!WARNING]
+> `WAN_IF` と `LAN_IF` に指定したインターフェースは Netplan で設定を行わないようにする必要があります。
+> Netplan の設定からは削除してください。
+> Netplan の設定に `WAN_IF` と `LAN_IF` に指定したインターフェースがあると IPoEd が設定したアドレスが Netplan によって消される可能性があります。
 
 以降の例では `WAN_IF` が `enp1s0` で `LAN_IF` が `enp2s0` であるとして説明します。
 それぞれ実際のインターフェースに置き換えてください。
