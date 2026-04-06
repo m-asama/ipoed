@@ -51,7 +51,7 @@ ipoed.service is a disabled or a static unit, not starting it.
 ```shell
 $ sudo vi /etc/default/ipoed
 WAN_IF="enp1s0"
-LAN_IF="enp2s0
+LAN_IF="enp2s0"
 IPOED_OPTS="--lan-addr4 192.168.1.1/24"
 ```
 
@@ -323,4 +323,6 @@ IPOED_OPTS="--lan-addr4 192.168.1.1/24 --hook-path /path/to/hook"
 ## 補足
 
 * ICMPv6 RA モードで動作する場合は IPoEd が自動で `WAN_IF` をプロミスキャスに設定します。これは WAN 側から送られてくる ICMPv6 NS の宛先アドレスがターゲットの IPv6 アドレスに対応するマルチキャストアドレスとなりますが LAN 側の全ての IPv6 アドレスに対応するマルチキャストグループにあらかじめ入っておくことが困難なためです。`WAN_IF` をプロミスキャスにすることで全ての ICMPv6 NS を拾えるようになります。`ip link set promisc off dev $WAN_IF` したりすると LAN 側の端末が IPv6 で通信できなくなるのでご注意ください。状態が切断された際は自動でプロミスキャスを無効にします。
+* ICMPv6 RA モードでは ONU/HGW と WAN 側の間に端末を設置することはできません。 WAN 側の外側の端末から LAN 側への通信は(`ip6tables` で許可されていれば)可能ですが、 LAN 側から WAN 側の外側に設置された端末への通信は(LAN 側から送られた ICMPv6 NS が WAN 側の外側へ転送されないため)できません。
+* フックは前の実行が完了してから次の実行が開始されます。例えば `IPV6_DOWN` と `IPV6_UP` がほぼ同時に起こるような状況があった場合 `IPV6_DOWN` の分の実行が完了してから `IPV6_UP` の分の実行が開始されます。フックの実行は IPoEd 側ではタイムアウト処理を行わないため必ず完了するように注意する必要があります。フックが完了しなかった場合、それ以降のフックが実行されなくなります。
 * TODO: ICMPv6/DHCPv6 パケット受信時のバリデーション確認
