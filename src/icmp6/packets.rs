@@ -355,7 +355,7 @@ impl RtSolicitMsg {
                     src_lladdr = Some(SrcLLAddrOpt::parse(&bytes[pos..])?);
                 }
                 _ => {
-                    println!("Unknown ICMPv6 RS option type {}", opt_type);
+                    //println!("Unknown ICMPv6 RS option type {}", opt_type);
                 }
             }
             pos += opt_bytes_len;
@@ -522,7 +522,7 @@ impl RtAdvertMsg {
                     prefix_infos.push(PrefixInfoOpt::parse(&bytes[pos..])?);
                 }
                 _ => {
-                    println!("Unknown ICMPv6 RA option type {}", opt_type);
+                    //println!("Unknown ICMPv6 RA option type {}", opt_type);
                 }
             }
             pos += opt_bytes_len;
@@ -603,7 +603,7 @@ impl NeighSolicitMsg {
                     src_lladdr = Some(SrcLLAddrOpt::parse(&bytes[pos..])?);
                 }
                 _ => {
-                    println!("Unknown ICMPv6 NS option type {}", opt_type);
+                    //println!("Unknown ICMPv6 NS option type {}", opt_type);
                 }
             }
             pos += opt_bytes_len;
@@ -775,7 +775,7 @@ impl NeighAdvertMsg {
                     tgt_lladdr = Some(TgtLLAddrOpt::parse(&bytes[pos..])?);
                 }
                 _ => {
-                    println!("Unknown ICMPv6 NA option type {}", opt_type);
+                    //println!("Unknown ICMPv6 NA option type {}", opt_type);
                 }
             }
             pos += opt_bytes_len;
@@ -867,7 +867,7 @@ impl RedirectMsg {
                     redirected_hdr = Some(RedirectedHdrOpt::parse(&bytes[pos..])?);
                 }
                 _ => {
-                    println!("Unknown ICMPv6 Redirect option type {}", opt_type);
+                    //println!("Unknown ICMPv6 Redirect option type {}", opt_type);
                 }
             }
             pos += opt_bytes_len;
