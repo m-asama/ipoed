@@ -205,11 +205,16 @@ fn listener(sockfd: libc::c_int, if_index: i32, ch_tx: mpsc::Sender<IpoedMsg>) {
     loop {
         let mut buf = [0u8; 8192];
         let bufmp = buf.as_mut_ptr() as *mut libc::c_void;
-        let n = unsafe { libc::read(sockfd, bufmp, buf.len()) } as usize;
+        let n = unsafe { libc::read(sockfd, bufmp, buf.len()) };
+        if n < 0 {
+            println!("ICMPv6 socket read error: {n}");
+            continue;
+        }
         if n < 40 {
             println!("Too short message");
             continue;
         }
+        let n = n as usize;
         let iif: Option<i32> = Some(if_index);
         let src: [u8; 16] = buf[8..24].try_into().unwrap();
         let src: Option<Ipv6Addr> = Some(Ipv6Addr::from_octets(src));

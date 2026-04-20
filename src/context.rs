@@ -117,10 +117,8 @@ impl Context {
         let lan_addr4 = conf.lan_addr4;
         let mut wan_if_index: Option<i32> = None;
         let mut wan_if_hw_addr: Option<[u8; 6]> = None;
-        let mut wan_if_ll_addr: Option<Ipv6Addr> = None;
         let mut lan_if_index: Option<i32> = None;
         let mut lan_if_hw_addr: Option<[u8; 6]> = None;
-        let mut lan_if_ll_addr: Option<Ipv6Addr> = None;
         let links = match rtnl::dump_links() {
             Ok(links) => links,
             Err(e) => return Err(format!("Dump links failed: {e}")),
@@ -153,26 +151,8 @@ impl Context {
             Some(lan_if_hw_addr) => lan_if_hw_addr,
             None => return Err(format!("LAN interface H/W address unknown")),
         };
-        let addrs = match rtnl::dump_ipv6_addrs() {
-            Ok(addrs) => addrs,
-            Err(e) => return Err(format!("Dump IPv6 addresses failed: {e}")),
-        };
-        for addr in addrs {
-            if addr.index == wan_if_index && addr.scope == rtnl::Scope::Link {
-                wan_if_ll_addr = addr.address6;
-            }
-            if addr.index == lan_if_index && addr.scope == rtnl::Scope::Link {
-                lan_if_ll_addr = addr.address6;
-            }
-        }
-        let wan_if_ll_addr = match wan_if_ll_addr {
-            Some(wan_if_ll_addr) => wan_if_ll_addr,
-            None => return Err(format!("WAN IPv6 link-local address unknown")),
-        };
-        let lan_if_ll_addr = match lan_if_ll_addr {
-            Some(lan_if_ll_addr) => lan_if_ll_addr,
-            None => return Err(format!("LAN IPv6 link-local address unknown")),
-        };
+        let wan_if_ll_addr = utils::ipv6_ll_addr(&wan_if_hw_addr);
+        let lan_if_ll_addr = utils::ipv6_ll_addr(&lan_if_hw_addr);
         let lan_iid = if let Some(lan_iid) = conf.lan_iid {
             lan_iid
         } else {

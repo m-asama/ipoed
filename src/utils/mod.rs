@@ -31,6 +31,14 @@ pub fn ipv6_address(prefix: &Ipv6Addr, iid: &Ipv6Addr) -> Ipv6Addr {
     )
 }
 
+pub fn ipv6_ll_addr(hw_addr: &[u8; 6]) -> Ipv6Addr {
+    let mut octs = [0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0xfe, 0, 0, 0];
+    octs[8..11].copy_from_slice(&hw_addr[0..3]);
+    octs[13..16].copy_from_slice(&hw_addr[3..6]);
+    octs[8] ^= 2;
+    Ipv6Addr::from_octets(octs)
+}
+
 pub fn resolved_conf_update(servers: &[Ipv6Addr], searchs: &[String]) {
     let mut buf = String::new();
     buf += "[Resolve]\n";

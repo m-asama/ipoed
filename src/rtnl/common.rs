@@ -38,6 +38,7 @@ impl Into<u16> for IfType {
 }
 
 // Scope
+/*
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Scope {
     Universe,
@@ -47,7 +48,9 @@ pub enum Scope {
     NoWhere,
     UserDefined(u8),
 }
+ */
 
+/*
 impl From<u8> for Scope {
     fn from(scope: u8) -> Self {
         match scope {
@@ -60,7 +63,9 @@ impl From<u8> for Scope {
         }
     }
 }
+ */
 
+/*
 impl Into<u8> for Scope {
     fn into(self) -> u8 {
         match self {
@@ -73,6 +78,7 @@ impl Into<u8> for Scope {
         }
     }
 }
+ */
 
 // Family
 #[repr(u8)]

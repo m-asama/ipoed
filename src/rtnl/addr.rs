@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 // Copyright(c) 2026 Masakazu Asama
 
-use std::collections::HashSet;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 use crate::rtnl::packets;
-use crate::rtnl::{Family, RtnlSocket, Scope};
+use crate::rtnl::{Family, RtnlSocket};
 
+/*
 #[repr(u32)]
 #[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
 pub enum IfaFlag {
@@ -23,13 +23,16 @@ pub enum IfaFlag {
     McAutoJoin = libc::IFA_F_MCAUTOJOIN,
     StablePrivacy = libc::IFA_F_STABLE_PRIVACY,
 }
+ */
 
+/*
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct IfaFlags(HashSet<IfaFlag>);
+ */
 
+/*
 impl IfaFlags {
     // Secondary
-    /*
     pub fn has_secondary(&self) -> bool {
         self.0.contains(&IfaFlag::Secondary)
     }
@@ -39,10 +42,8 @@ impl IfaFlags {
     pub fn unset_secondary(&mut self) -> bool {
         self.0.remove(&IfaFlag::Secondary)
     }
-     */
 
     // NoDad
-    /*
     pub fn has_no_dad(&self) -> bool {
         self.0.contains(&IfaFlag::NoDad)
     }
@@ -52,10 +53,8 @@ impl IfaFlags {
     pub fn unset_no_dad(&mut self) -> bool {
         self.0.remove(&IfaFlag::NoDad)
     }
-     */
 
     // Optimistic
-    /*
     pub fn has_optimistic(&self) -> bool {
         self.0.contains(&IfaFlag::Optimistic)
     }
@@ -65,10 +64,8 @@ impl IfaFlags {
     pub fn unset_optimistic(&mut self) -> bool {
         self.0.remove(&IfaFlag::Optimistic)
     }
-     */
 
     // DadFailed
-    /*
     pub fn has_dad_failed(&self) -> bool {
         self.0.contains(&IfaFlag::DadFailed)
     }
@@ -78,10 +75,8 @@ impl IfaFlags {
     pub fn unset_dad_failed(&mut self) -> bool {
         self.0.remove(&IfaFlag::DadFailed)
     }
-     */
 
     // HomeAddress
-    /*
     pub fn has_home_address(&self) -> bool {
         self.0.contains(&IfaFlag::HomeAddress)
     }
@@ -91,10 +86,8 @@ impl IfaFlags {
     pub fn unset_home_address(&mut self) -> bool {
         self.0.remove(&IfaFlag::HomeAddress)
     }
-     */
 
     // Deprecated
-    /*
     pub fn has_deprecated(&self) -> bool {
         self.0.contains(&IfaFlag::Deprecated)
     }
@@ -104,10 +97,8 @@ impl IfaFlags {
     pub fn unset_deprecated(&mut self) -> bool {
         self.0.remove(&IfaFlag::Deprecated)
     }
-     */
 
     // Tentative
-    /*
     pub fn has_tentative(&self) -> bool {
         self.0.contains(&IfaFlag::Tentative)
     }
@@ -117,10 +108,8 @@ impl IfaFlags {
     pub fn unset_tentative(&mut self) -> bool {
         self.0.remove(&IfaFlag::Tentative)
     }
-     */
 
     // Permanent
-    /*
     pub fn has_permanent(&self) -> bool {
         self.0.contains(&IfaFlag::Permanent)
     }
@@ -130,10 +119,8 @@ impl IfaFlags {
     pub fn unset_permanent(&mut self) -> bool {
         self.0.remove(&IfaFlag::Permanent)
     }
-     */
 
     // ManageTempAddr
-    /*
     pub fn has_manage_temp_addr(&self) -> bool {
         self.0.contains(&IfaFlag::ManageTempAddr)
     }
@@ -143,10 +130,8 @@ impl IfaFlags {
     pub fn unset_manage_temp_addr(&mut self) -> bool {
         self.0.remove(&IfaFlag::ManageTempAddr)
     }
-     */
 
     // NoPrefixRoute
-    /*
     pub fn has_no_prefix_route(&self) -> bool {
         self.0.contains(&IfaFlag::NoPrefixRoute)
     }
@@ -156,10 +141,8 @@ impl IfaFlags {
     pub fn unset_no_prefix_route(&mut self) -> bool {
         self.0.remove(&IfaFlag::NoPrefixRoute)
     }
-     */
 
     // McAutoJoin
-    /*
     pub fn has_mc_auto_join(&self) -> bool {
         self.0.contains(&IfaFlag::McAutoJoin)
     }
@@ -169,10 +152,8 @@ impl IfaFlags {
     pub fn unset_mc_auto_join(&mut self) -> bool {
         self.0.remove(&IfaFlag::McAutoJoin)
     }
-     */
 
     // StablePrivacy
-    /*
     pub fn has_stable_privacy(&self) -> bool {
         self.0.contains(&IfaFlag::StablePrivacy)
     }
@@ -182,9 +163,10 @@ impl IfaFlags {
     pub fn unset_stable_privacy(&mut self) -> bool {
         self.0.remove(&IfaFlag::StablePrivacy)
     }
-     */
 }
+ */
 
+/*
 impl From<u8> for IfaFlags {
     fn from(flags_u8: u8) -> Self {
         let mut flags_set = HashSet::<IfaFlag>::new();
@@ -215,7 +197,9 @@ impl From<u8> for IfaFlags {
         IfaFlags(flags_set)
     }
 }
+ */
 
+/*
 impl Into<u8> for IfaFlags {
     fn into(self) -> u8 {
         let mut flags_u8: u8 = 0;
@@ -246,7 +230,9 @@ impl Into<u8> for IfaFlags {
         flags_u8
     }
 }
+ */
 
+/*
 impl From<u32> for IfaFlags {
     fn from(flags_u32: u32) -> Self {
         let mut flags_set = IfaFlags::from(flags_u32 as u8).0;
@@ -265,7 +251,9 @@ impl From<u32> for IfaFlags {
         IfaFlags(flags_set)
     }
 }
+ */
 
+/*
 impl Into<u32> for IfaFlags {
     fn into(self) -> u32 {
         let flags_u8: u8 = self.clone().into();
@@ -285,7 +273,9 @@ impl Into<u32> for IfaFlags {
         flags_u32
     }
 }
+ */
 
+/*
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Addr {
     pub family: Family,
@@ -296,8 +286,10 @@ pub struct Addr {
     pub address6: Option<Ipv6Addr>,
     pub prefixlen: u8,
 }
+ */
 
 impl RtnlSocket {
+    /*
     fn dump_addrs(&mut self, family: Family) -> Result<Vec<Addr>, String> {
         self.seq += 1;
         let rtnl_msg = packets::RtnlMsg::Addr(packets::AddrMsg {
@@ -333,6 +325,7 @@ impl RtnlSocket {
             }
         })
     }
+     */
 
     /*
     fn dump_ipv4_addrs(&mut self) -> Result<Vec<Addr>, String> {
@@ -436,10 +429,12 @@ impl RtnlSocket {
     }
 }
 
+/*
 pub fn dump_addrs(family: Family) -> Result<Vec<Addr>, String> {
     let mut sock = RtnlSocket::new()?;
     sock.dump_addrs(family)
 }
+ */
 
 /*
 pub fn dump_ipv4_addrs() -> Result<Vec<Addr>, String> {
@@ -447,9 +442,11 @@ pub fn dump_ipv4_addrs() -> Result<Vec<Addr>, String> {
 }
  */
 
+/*
 pub fn dump_ipv6_addrs() -> Result<Vec<Addr>, String> {
     dump_addrs(Family::Inet6)
 }
+ */
 
 pub fn rep_ipv4_addr(addr: &Ipv4Addr, addr_len: u8, oif: i32) -> Result<(), String> {
     let mut sock = RtnlSocket::new()?;
