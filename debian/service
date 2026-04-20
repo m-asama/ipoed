@@ -8,6 +8,7 @@ EnvironmentFile=-/etc/default/ipoed
 Type=simple
 ExecStartPre=/bin/ip link set up dev $WAN_IF
 ExecStartPre=/bin/ip link set up dev $LAN_IF
+ExecStartPre=/bin/sleep 5
 ExecStart=/usr/sbin/ipoed --wan-if $WAN_IF --lan-if $LAN_IF $IPOED_OPTS
 
 [Install]
