@@ -25,7 +25,7 @@ IPoEd は以下の機能は提供しません。
 
 2026/04/06 時点で Ubuntu 24.04 LTS で動作検証しています。
 
-2026/04/06 時点で HB46PP は OCX光 インターネット(※2)または v6IX(※3) によるインターネット接続サービスの ICMPv6 RA モードで動作検証しています。
+2026/04/20 時点で HB46PP は OCX光 インターネット(※2)または v6IX(※3) によるインターネット接続サービスの ICMPv6 RA モードと DHCPv6 PD モードで動作検証しています。
 
 * (※1) https://github.com/v6pc/v6mig-prov/blob/master/spec.md
 * (※2) https://ocx-hikari.net
