@@ -1,0 +1,119 @@
+#!/bin/sh
+#
+# DS-Lite hook script for IPoEd.
+#
+# Set up an IPIP6 tunnel to an AFTR when IPv6 becomes available,
+# and tear it down when IPv6 goes away.
+#
+# Requires --disable-hb46pp in IPOED_OPTS (ipoed must not manage the tunnel).
+#
+# Install:
+#   sudo cp examples/hooks/ds-lite/hook /usr/libexec/ipoed/hook
+#   sudo chmod 755 /usr/libexec/ipoed/hook
+# Or set --hook-path directly in IPOED_OPTS.
+
+set -eu
+
+# --- Configuration -----------------------------------------------------------
+# Settings are loaded from hook.conf in the same directory as this script.
+# Copy hook.conf.example to hook.conf and edit to match your environment.
+
+CONF="$(dirname "$0")/hook.conf"
+if [ ! -f "$CONF" ]; then
+    logger -t ipoed-hook "config file not found: $CONF"
+    exit 1
+fi
+# shellcheck source=hook.conf.example
+. "$CONF"
+
+# Defaults for optional settings.
+TUN_IF="${TUN_IF:-dslite0}"
+# IPv6 MTU 1500 - IPv6 header 40 - IPv4 header 20 - TCP header 20 = 1420
+MSS="${MSS:-1420}"
+
+# -----------------------------------------------------------------------------
+
+EVENT="${IPOED_HOOK_EVENT:-}"
+WAN_IF="${IPOED_WAN_IF:-}"
+IPV6_ADDR="${IPOED_IPV6_ADDR:-}"
+
+log() {
+    logger -t ipoed-hook "$*"
+}
+
+mss_rule_exists() {
+    iptables -t mangle -C FORWARD \
+        -o "$TUN_IF" -p tcp --tcp-flags SYN,RST SYN \
+        -j TCPMSS --set-mss "$MSS" 2>/dev/null
+}
+
+tun_up() {
+    # Resolve AFTR address. IPv6 default route is already set at this point.
+    AFTR_ADDR=$(getent ahostsv6 "$AFTR_HOST" 2>/dev/null | awk 'NR==1{print $1}')
+    if [ -z "$AFTR_ADDR" ]; then
+        log "event=$EVENT failed to resolve $AFTR_HOST"
+        exit 1
+    fi
+
+    # Remove stale tunnel if it exists.
+    if ip link show "$TUN_IF" > /dev/null 2>&1; then
+        ip link set "$TUN_IF" down 2>/dev/null || true
+        ip tunnel del "$TUN_IF" 2>/dev/null || true
+    fi
+
+    # Create IPIP6 tunnel. Use the LAN IPv6 address as the local endpoint;
+    # ipoed proxies NS/NA for it on the WAN side (RA mode) or it is the
+    # delegated-prefix address (PD mode), so it is reachable from the AFTR.
+    ip tunnel add "$TUN_IF" mode ipip6 \
+        remote "$AFTR_ADDR" \
+        local "$IPV6_ADDR" \
+        dev "$WAN_IF"
+    ip link set "$TUN_IF" up
+
+    # Route all IPv4 traffic through the tunnel.
+    ip route replace default dev "$TUN_IF"
+
+    # Clamp TCP MSS to avoid fragmentation.
+    if ! mss_rule_exists; then
+        iptables -t mangle -A FORWARD \
+            -o "$TUN_IF" -p tcp --tcp-flags SYN,RST SYN \
+            -j TCPMSS --set-mss "$MSS"
+    fi
+
+    log "event=$EVENT tun_if=$TUN_IF local=$IPV6_ADDR remote=$AFTR_ADDR ($AFTR_HOST)"
+}
+
+tun_down() {
+    if mss_rule_exists; then
+        iptables -t mangle -D FORWARD \
+            -o "$TUN_IF" -p tcp --tcp-flags SYN,RST SYN \
+            -j TCPMSS --set-mss "$MSS"
+    fi
+
+    ip route del default dev "$TUN_IF" 2>/dev/null || true
+
+    if ip link show "$TUN_IF" > /dev/null 2>&1; then
+        ip link set "$TUN_IF" down 2>/dev/null || true
+        ip tunnel del "$TUN_IF" 2>/dev/null || true
+    fi
+
+    log "event=$EVENT tun_if=$TUN_IF"
+}
+
+case "$EVENT" in
+    IPV6_UP)
+        tun_up
+        ;;
+    IPV6_DOWN)
+        tun_down
+        ;;
+    IPV4_UP|IPV4_DOWN)
+        # Not expected when --disable-hb46pp is set.
+        log "event=$EVENT (unexpected with --disable-hb46pp)"
+        ;;
+    *)
+        log "event=$EVENT (unknown)"
+        ;;
+esac
+
+exit 0

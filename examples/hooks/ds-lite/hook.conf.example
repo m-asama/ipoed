@@ -1,0 +1,12 @@
+# DS-Lite hook configuration.
+# Copy this file to hook.conf and edit to match your environment.
+
+# AFTR hostname (AAAA record). Required.
+AFTR_HOST="aftr.example.jp"
+
+# Tunnel interface name. Optional (default: dslite0).
+#TUN_IF="dslite0"
+
+# TCP MSS value. Optional (default: 1420).
+# IPv6 MTU 1500 - IPv6 header 40 - IPv4 header 20 - TCP header 20 = 1420
+#MSS=1420
