@@ -1,0 +1,23 @@
+# (Manually-configured) DS-Lite hook script configuration.
+# Copy this file to hook.conf and edit to match your environment.
+
+# AFTR hostname or IPv6 address. Required.
+AFTR_HOST="aftr.example.jp"
+#AFTR_HOST="2001:db8::1:2:3:4"
+
+# Tunnel interface name. Optional (default: ipoetun).
+#TUN_IF="ipoetun"
+
+# Set IPv4 default route to tunnel. Optional (default: true).
+#SET_DEFAULT_ROUTE=true
+
+# When setting IPv4 default route, override existing one. Optional (default: true).
+#SET_DEFAULT_ROUTE_OVERRIDE=true
+
+# Set true to clamp MSS. Optional (default: false)
+#MSS_CLAMP=false
+
+# TCP MSS value. Optional (default: 1420).
+# IPv6 MTU 1500 - IPv6 header 40 = IPv4 MTU 1460
+# IPv4 MTU 1460 - IPv4 header 20 - TCP header 20 = IPv4 TCP MSS 1420
+#MSS=1420
