@@ -1,0 +1,19 @@
+#!/bin/bash -x
+
+if [ -f /etc/systemd/resolved.conf.d/ipoed.conf ]
+then
+	rm -f /etc/systemd/resolved.conf.d/ipoed.conf
+fi
+
+if [ -d /sys/class/net/ipoetun ]
+then
+	ip link delete ipoetun
+fi
+
+addrs=$(ip -6 address show dev $LAN_IF scope global | grep inet6 | awk '{print $2}')
+for addr in $addrs
+do
+	ip address delete $addr dev $LAN_IF
+done
+
+ip -6 route delete default dev $WAN_IF

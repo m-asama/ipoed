@@ -1,0 +1,9 @@
+#!/bin/bash -x
+
+if [ ! -d /etc/systemd/resolved.conf.d ]
+then
+	mkdir /etc/systemd/resolved.conf.d
+fi
+
+ip link set up dev $WAN_IF
+ip link set up dev $LAN_IF

@@ -6,10 +6,9 @@ Wants=network.target
 [Service]
 EnvironmentFile=-/etc/default/ipoed
 Type=simple
-ExecStartPre=/bin/ip link set up dev $WAN_IF
-ExecStartPre=/bin/ip link set up dev $LAN_IF
-ExecStartPre=/bin/sleep 5
+ExecStartPre=/usr/libexec/ipoed/ipoed_start_pre
 ExecStart=/usr/sbin/ipoed --wan-if $WAN_IF --lan-if $LAN_IF $IPOED_OPTS
+ExecStopPost=/usr/libexec/ipoed/ipoed_stop_post
 
 [Install]
 WantedBy=network.target
